@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="splash_title">32sp</dimen>
+    <dimen name="balance_width">150dp</dimen>
+    <dimen name="balance_height">30dp</dimen>
+    <dimen name="balance_margin">5dp</dimen>
+    <dimen name="splash_margin">20dp</dimen>
+</resources>
