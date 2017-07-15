@@ -1,5 +1,6 @@
 package io.anda.trackingapp.maps;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
 import android.util.Log;
@@ -41,7 +42,7 @@ public class LocationManager {
         this.mContext = context;
     }
 
-    public static LocationManager getInstance(Context context) {
+    public static LocationManager createInstance(Context context) {
         if(instance==null) instance = new LocationManager(context);
         return instance;
     }
@@ -54,6 +55,7 @@ public class LocationManager {
         locationProvider = new ReactiveLocationProvider(mContext);
     }
 
+    @SuppressLint("MissingPermission")
     public void requestUpdateLocation(final RequestLocationCallback callback){
         locationSubscription = locationProvider.getUpdatedLocation(request)
                 .subscribe(new Subscriber<Location>() {
@@ -124,8 +126,8 @@ public class LocationManager {
     }
 
     public void onStop(){
-        if(resolutionSettingSubscription!=null) resolutionSettingSubscription.unsubscribe();
-        if(locationSubscription!=null) locationSubscription.unsubscribe();
+        if(resolutionSettingSubscription!=null && !resolutionSettingSubscription.isUnsubscribed()) resolutionSettingSubscription.unsubscribe();
+        if(locationSubscription!=null && !locationSubscription.isUnsubscribed()) locationSubscription.unsubscribe();
         if(cameraTimer!=null) cameraTimer.cancel();
     }
 

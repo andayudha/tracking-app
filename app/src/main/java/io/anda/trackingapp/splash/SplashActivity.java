@@ -21,7 +21,7 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        mSplashPresenter = new SplashPresenter(this);
+        mSplashPresenter = new SplashPresenter();
         checkPermission();
     }
 

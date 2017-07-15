@@ -3,19 +3,20 @@ package io.anda.trackingapp.splash;
 import android.content.Context;
 import android.util.Log;
 
+import io.anda.trackingapp.App;
 import io.anda.trackingapp.ConfigUtil;
 import io.anda.trackingapp.RestApiManager;
 
 
 public class SplashPresenter {
+    private static String TAG = SplashPresenter.class.getSimpleName();
 
     private SplashView mSplashView;
 
-    private Context mContext;
-    private static String TAG = SplashPresenter.class.getSimpleName();
+    private RestApiManager mRestApiManager;
 
-    public SplashPresenter(Context mContext) {
-        this.mContext = mContext;
+    public SplashPresenter() {
+        mRestApiManager  = App.getInstance().getRestApiManager();
     }
 
     public void attachView(SplashView splashView){
@@ -24,11 +25,11 @@ public class SplashPresenter {
 
 
     public void getConfiguration() {
-        RestApiManager.getInstance(mContext).getConfiguration(new RestApiManager.ConfigurationCallback() {
+       mRestApiManager.getConfiguration(new RestApiManager.ConfigurationCallback() {
             @Override
             public void onSuccess(ConfigModel config) {
-                ConfigUtil.putMarkerThemes(mContext, config.getThemes());
-                RestApiManager.getInstance(mContext).stopRequestConfig();
+                ConfigUtil.putMarkerThemes(App.getInstance(), config.getThemes());
+                mRestApiManager.stopRequestConfig();
                 mSplashView.onConfigurationSuccess();
             }
 
@@ -36,7 +37,7 @@ public class SplashPresenter {
             public void onError(String message) {
                 Log.d(TAG, message);
                 mSplashView.onConfigurationSuccess();
-                RestApiManager.getInstance(mContext).stopRequestConfig();
+                mRestApiManager.stopRequestConfig();
             }
         });
     }

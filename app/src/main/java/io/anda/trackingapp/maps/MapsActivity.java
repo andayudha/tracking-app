@@ -1,5 +1,6 @@
 package io.anda.trackingapp.maps;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Point;
@@ -42,7 +43,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mapsPresenter = new MapsPresenter(this);
+        mapsPresenter = new MapsPresenter();
         mapsPresenter.checkLocationSettings();
 
         setContentView(R.layout.activity_main);

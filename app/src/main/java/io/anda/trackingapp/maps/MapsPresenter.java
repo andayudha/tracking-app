@@ -7,25 +7,27 @@ import android.util.Log;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
 
+import io.anda.trackingapp.App;
 import io.anda.trackingapp.ReportData;
 import io.anda.trackingapp.RestApiManager;
 
 public class MapsPresenter {
-
-    private Context mContext;
-    private MapsView mMapsView;
     private static final String TAG = MapsPresenter.class.getSimpleName();
 
-    public MapsPresenter(Context context) {
-        this.mContext = context;
-        LocationManager.getInstance(mContext).initLocationService();
+    private MapsView mMapsView;
+    private LocationManager mLocationManager;
+    private RestApiManager mRestApiManager;
+
+    public MapsPresenter() {
+        this.mLocationManager = App.getInstance().getLocationManager();
+        this.mRestApiManager = App.getInstance().getRestApiManager();
     }
 
     public void attachView(final MapsView mapsView) {
         this.mMapsView = mapsView;
         requestUpdateLocation();
 
-        LocationManager.getInstance(mContext).initCameraTimer(new LocationManager.CameraIntervalCallback() {
+        mLocationManager.initCameraTimer(new LocationManager.CameraIntervalCallback() {
             @Override
             public void onIntervalCalled(LatLng latLng) {
                 mMapsView.onCameraMapsUpdate(latLng);
@@ -34,7 +36,7 @@ public class MapsPresenter {
     }
 
     private void requestUpdateLocation(){
-        LocationManager.getInstance(mContext).requestUpdateLocation(new LocationManager.RequestLocationCallback() {
+        mLocationManager.requestUpdateLocation(new LocationManager.RequestLocationCallback() {
             @Override
             public void onLocationUpdated(Location location) {
                 mMapsView.onLocationUpdate(location);
@@ -51,7 +53,7 @@ public class MapsPresenter {
     private void reportLocationToServer(Location location) {
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        RestApiManager.getInstance(mContext).reportLocationToServer(new ReportData(latitude, longitude),
+        mRestApiManager.reportLocationToServer(new ReportData(latitude, longitude),
                 new RestApiManager.ReportLocationCallback() {
                     @Override
                     public void onSuccess() {
@@ -66,7 +68,7 @@ public class MapsPresenter {
     }
 
     public void checkLocationSettings(){
-        LocationManager.getInstance(mContext).checkLocationSettings(new LocationManager.LocationSettingsCallback() {
+        mLocationManager.checkLocationSettings(new LocationManager.LocationSettingsCallback() {
             @Override
             public void onLocationSettingsRequired(Status status) {
                 mMapsView.onLocationSettingsRequired(status);
@@ -75,11 +77,11 @@ public class MapsPresenter {
     }
 
     public void onStop(){
-        LocationManager.getInstance(mContext).onStop();
-        RestApiManager.getInstance(mContext).stopReportingLocation();
+        mLocationManager.onStop();
+        mRestApiManager.onStop();
     }
 
     public void disableLocationSetting(){
-        LocationManager.getInstance(mContext).disableLocationSetting();
+        mLocationManager.disableLocationSetting();
     }
 }

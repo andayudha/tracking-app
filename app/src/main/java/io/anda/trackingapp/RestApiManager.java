@@ -41,7 +41,7 @@ public class RestApiManager {
         restService = retrofit.create(RestService.class);
     }
 
-    public static RestApiManager getInstance(Context context) {
+    public static RestApiManager createInstance(Context context) {
         if(instance==null) instance = new RestApiManager(context);
         return instance;
     }
@@ -98,18 +98,23 @@ public class RestApiManager {
                 });
     }
 
-    public void stopReportingLocation(){
-        if(reportSubscription!=null) reportSubscription.unsubscribe();
+    private void stopReportingLocation(){
+        if(reportSubscription!=null && !reportSubscription.isUnsubscribed()) reportSubscription.unsubscribe();
     }
 
     public void stopRequestConfig(){
-        if(configSubscription !=null) configSubscription.unsubscribe();
+        if(configSubscription !=null && !configSubscription.isUnsubscribed()) configSubscription.unsubscribe();
     }
 
     private static OkHttpClient buildOkHttpsClient(final Context context) {
         return new OkHttpClient.Builder()
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .build();
+    }
+
+    public void onStop() {
+        stopRequestConfig();
+        stopReportingLocation();
     }
 
     public interface ConfigurationCallback{
