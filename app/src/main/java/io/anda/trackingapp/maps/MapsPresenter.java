@@ -21,6 +21,7 @@ public class MapsPresenter {
     public MapsPresenter() {
         this.mLocationManager = App.getInstance().getLocationManager();
         this.mRestApiManager = App.getInstance().getRestApiManager();
+        mLocationManager.initLocationService();
     }
 
     public void attachView(final MapsView mapsView) {
